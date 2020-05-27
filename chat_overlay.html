@@ -1,0 +1,53 @@
+<html>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans&display=swap" rel="stylesheet"> 
+  <style type="text/css">
+    ul { list-style: none; padding: 0; }
+    body { background-color: black; font-family: 'IBM Plex Sans'; }
+    a { color: white; }
+    .who { color: yellow; float: left; }
+    .who::after { content: ":" }
+    .what { color: white; margin-left: 0.5em; }
+    .container {
+	height: 100px;
+	overflow: auto;
+	display: flex;
+	flex-direction: column-reverse;
+    }
+  </style>
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js" integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jQuery-linkify/2.1.9/linkify.min.js" integrity="sha256-b8aRDYEOoOLGpyaXMI3N2nWUbjSeQ2QxzKjmPnCa4yA=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jQuery-linkify/2.1.9/linkify-string.min.js" integrity="sha256-FyCQ9XVSgI4tV3R0ldp8nZkLYPYBwRznvSeFME7tXJ8=" crossorigin="anonymous"></script>
+  <script src="https://github.com/tmijs/tmi.js/releases/download/v1.5.0/tmi.min.js"></script>
+  
+  <script>
+    const client = new window.tmi.Client({
+	options: { debug: false },
+	connection: {
+	    reconnect: true,
+	    secure: true
+	},
+	channels: [ window.location.hash ]
+    });
+
+    client.connect();
+    client.on('message', (channel, tags, message, self) => {
+	var messages = $("#messages");
+	var message = linkifyStr(message);
+	messages.append($("<li>").html(`<span class="who">${tags.username}</span>
+                                        <span class="what">${message}</span>`));
+	console.log(message);
+	
+    });
+  </script>
+  
+  <body>
+    <div class="container">
+      <div>
+	<ul id="messages">
+	  <li><span class="who">Chat</span><span class="what">Welcome to the show!</span></li>
+	</ul>
+      </div>
+    </div>
+  </body>
+</html>
